@@ -84,9 +84,18 @@ function start(gl, canvas) {
     camera.move(10,0,0,1);
     camera.move(2,1,0,0);
     camera.rotate(10,0,1,0);
-
+    
     // Create scene
     var scene = new Scene(gl, camera);
+
+     // Create a Sphere
+    var sphere = new SphereGeometry(1, 32, 8);
+    sphere.v_shader = v_shaders["sphere"];
+    sphere.f_shader = f_shaders["sphere"];
+    sphere.setPosition(new Vector3([-3,0.0,0.0]));
+    scene.addGeometry(sphere);
+
+    sphere.addUniform("u_cameraPos", "v3", camera.position.elements);
 
     // Create a cube
     var cube = new CubeGeometry(1);
@@ -97,49 +106,87 @@ function start(gl, canvas) {
     cube.setScale(new Vector3([0.75,0.75,0.75]));
     scene.addGeometry(cube);
 
-    var triang = new Geometry();
-    triang.vertices = [-1, -1, 0.0, 0.0, 1.0, 0.0, 1, -1, 0.0];
-    triang.indices = [0, 1, 2];
-    var uvs = [0.0, 0.0, 0.0, 0.5, 1.0, 0.0, 1.0, 0.0, 0.0];
-    triang.addAttribute("a_uv", uvs);
+    // var cube2 = new CubeGeometry(1);
+    // cube2.setVertexShader(v_shaders["cube"]);
+    // cube2.setFragmentShader(f_shaders["cube"]);
+    // cube2.setRotation(new Vector3([0,15,0]));
+    // cube2.setPosition(new Vector3([0.0,0.0,0.0]));
+    // cube2.setScale(new Vector3([0.75,0.75,0.75]));
+    // scene.addGeometry(cube2);
 
-    triang.setVertexShader(v_shaders["triang"]);
-    triang.setFragmentShader(f_shaders["triang"]);
-    scene.addGeometry(triang);
+    var plane = new Geometry();
+    var size = 1.0
+    plane.vertices = [0.0, size, 0.0, 
+                      0.0, -size, 0.0, 
+                      -size, size, 0.0,
+                      -size,  -size, 0.0,
 
-    var triang2 = new Geometry();
-    triang2.vertices = [-3.5, -1, 0.0, -2.5, 1.0, 0.0, -1.5, -1, 0.0];
-    triang2.indices = [0, 1, 2];
-    var uvs2 = [0.0, 0.0, 0.0, 0.5, 1.0, 0.0, 1.0, 0.0, 0.0];
-    triang2.addAttribute("a_uv", uvs2);
+                      size, size, 0.0, 
+                      size, -size, 0.0, 
+                      0.0, size, 0.0,
+                      0.0,  -size, 0.0
+                     ];
+    plane.indices = [0, 1, 2, 
+                     1, 2, 3, 
+                     4, 5, 6,
+                     5, 6, 7
+                    ];
 
-    triang2.setVertexShader(v_shaders["triang"]);
-    triang2.setFragmentShader(f_shaders["triang"]);
-    scene.addGeometry(triang2);
+    var uvs = [0.0, 0.0, 0.0, 
+               0.0, 1.0, 0.0,
+               1.0, 0.0, 0.0,
+               1.0, 1.0, 0.0,
+
+               0.0, 0.0, 0.0, 
+               0.0, 1.0, 0.0,
+               1.0, 0.0, 0.0,
+               1.0, 1.0, 0.0
+               ];
+
+    plane.addAttribute("a_uv", uvs);
+
+    plane.setVertexShader(v_shaders["triang"]);
+    plane.setFragmentShader(f_shaders["triang"]);
+    scene.addGeometry(plane);
+
+    // var triang = new Geometry();
+    // triang.vertices = [-3.5, -1, 0.0, 
+    //                    -2.5, 1.0, 0.0, 
+    //                   -1.5, -1, 0.0];
+    // triang.indices = [0, 1, 2];
+    // var uvs = [0.0, 0.0, 0.0, 
+    //            0.5, 1.0, 0.0, 
+    //            1.0, 0.0, 0.0];
+    // triang.addAttribute("a_uv", uvs);
+
+    // triang.setVertexShader(v_shaders["triang"]);
+    // triang.setFragmentShader(f_shaders["triang"]);
+    // scene.addGeometry(triang);
+
+    // var triang2 = new Geometry();
+    // triang2.vertices = [-3.5, -1, 0.0, -2.5, 1.0, 0.0, -1.5, -1, 0.0];
+    // triang2.indices = [0, 1, 2];
+    // var uvs2 = [0.0, 0.0, 0.0, 0.5, 1.0, 0.0, 1.0, 0.0, 0.0];
+    // triang2.addAttribute("a_uv", uvs2);
+
+    // triang2.setVertexShader(v_shaders["triang"]);
+    // triang2.setFragmentShader(f_shaders["triang"]);
+    // scene.addGeometry(triang2);
 
     // Create a cube
     var skyBox = new CubeGeometry(10);
     skyBox.setVertexShader(v_shaders["cube"]);
     skyBox.setFragmentShader(f_shaders["cube"]);
-    // cube.setRotation(new Vector3([1,45,45]));
-    // cube.setPosition(new Vector3([3,0.0,0.0]));
-    // cube.setScale(new Vector3([0.75,0.75,0.75]));
     scene.addGeometry(skyBox);
 
-    // Create a Sphere
-    // var sphere = new SphereGeometry(1, 32, 8);
-    // sphere.v_shader = v_shaders["sphere"];
-    // sphere.f_shader = f_shaders["sphere"];
-    // sphere.setPosition(new Vector3([-3,0.0,0.0]));
-    // scene.addGeometry(sphere);
-
-    scene.draw();
+   scene.draw();
 
     var tex2 = new Texture2D(gl, 'img/beach/posz.jpg', function(tex) {
         console.log(tex);
-        triang.addUniform("u_tex", "t2", tex);
-        triang2.addUniform("u_tex", "t2", tex);
-        scene.draw();
+        plane.addUniform("u_squareTex", "t2", tex);
+        // triang.addUniform("u_tex", "t2", tex);
+        // triang2.addUniform("u_tex", "t2", tex);
+       scene.draw();
     });
 
     var tex = new Texture3D(gl, [
@@ -150,7 +197,9 @@ function start(gl, canvas) {
         'img/beach/negz.jpg',
         'img/beach/posz.jpg'
     ], function(tex) {
+        sphere.addUniform("u_sphereTex", "t3", tex);
         cube.addUniform("u_cubeTex", "t3", tex);
+        // cube2.addUniform("u_cubeTex", "t3", tex);
         skyBox.addUniform("u_skyBox", "t3", tex);
         scene.draw();
     });

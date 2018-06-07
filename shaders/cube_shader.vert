@@ -11,6 +11,7 @@ varying vec4 v_color;
 
 void main() {
     v_pos = a_Position.xyz;
+    //v_color = (a_Color.r, a_Color.g + 0.5, a_Color.b, a_Color.a);
     v_color = a_Color;
     gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_ModelMatrix * a_Position;
 }
