@@ -20,6 +20,8 @@ function main() {
     f_shaders["sphere"] = "";
     v_shaders["triang"] = "";
     f_shaders["triang"] = "";
+    v_shaders["skybox"] = "";
+    f_shaders["skybox"] = "";
 
     // load shader files (calls 'setShader' when done loading)
     loadFile("shaders/cube_shader.vert", function(shader_src) {
@@ -46,6 +48,15 @@ function main() {
 
     loadFile("shaders/triang_shader.frag", function(shader_src) {
         setShader(gl, canvas, "triang", gl.FRAGMENT_SHADER, shader_src);
+    });
+
+    // load shader files (calls 'setShader' when done loading)
+    loadFile("shaders/skybox_shader.vert", function(shader_src) {
+        setShader(gl, canvas, "skybox", gl.VERTEX_SHADER, shader_src);
+    });
+
+    loadFile("shaders/skybox_shader.frag", function(shader_src) {
+        setShader(gl, canvas, "skybox", gl.FRAGMENT_SHADER, shader_src);
     });
 }
 
@@ -87,6 +98,9 @@ function start(gl, canvas) {
     
     // Create scene
     var scene = new Scene(gl, camera);
+
+    window.onkeypress = function(ev){ keypress(ev, gl, canvas, camera, scene); };
+    window.onkeydown = function(ev){ keydown(ev, gl, canvas, camera, scene); };
 
      // Create a Sphere
     var sphere = new SphereGeometry(1, 32, 8);
@@ -175,8 +189,8 @@ function start(gl, canvas) {
 
     // Create a cube
     var skyBox = new CubeGeometry(10);
-    skyBox.setVertexShader(v_shaders["cube"]);
-    skyBox.setFragmentShader(f_shaders["cube"]);
+    skyBox.setVertexShader(v_shaders["skybox"]);
+    skyBox.setFragmentShader(f_shaders["skybox"]);
     scene.addGeometry(skyBox);
 
    scene.draw();
@@ -200,7 +214,42 @@ function start(gl, canvas) {
         sphere.addUniform("u_sphereTex", "t3", tex);
         cube.addUniform("u_cubeTex", "t3", tex);
         // cube2.addUniform("u_cubeTex", "t3", tex);
-        skyBox.addUniform("u_skyBox", "t3", tex);
+        skyBox.addUniform("u_skyBoxTex", "t3", tex);
         scene.draw();
     });
+}
+
+function keypress(ev, gl, canvas, camera, scene){
+  if (ev.which == "i".charCodeAt(0)){   //up
+    camera.move(1,0,1,0);
+  }
+  else if (ev.which == "k".charCodeAt(0)){  //down
+    camera.move(-1,0,1,0);
+  }
+  else if(ev.which == "j".charCodeAt(0)){ //left
+    camera.move(-1,1,0,0);
+  }
+  else if(ev.which == "l".charCodeAt(0)){ //right
+    camera.move(1,1,0,0);
+  }
+  else if(ev.which == ""){}
+
+  scene.draw();
+}
+
+function keydown(ev, gl, canvas, camera, scene){
+    if(ev.keyCode == 37){ //left
+        camera.rotate(1,0,1,0);
+    }
+    else if(ev.keyCode == 38){ //up
+        camera.rotate(1,1,0,0);
+    }
+    else if(ev.keyCode == 39){  //right
+        camera.rotate(-1,0,1,0);
+    }
+    else if(ev.keyCode == 40){  //down
+        camera.rotate(-1,1,0,0);
+    }
+
+  scene.draw();
 }
