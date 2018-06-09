@@ -1,6 +1,7 @@
 
 v_shaders = {}
 f_shaders = {}
+var load = 0;
 
 // called when page is loaded
 function main() {
@@ -102,6 +103,9 @@ function start(gl, canvas) {
     window.onkeypress = function(ev){ keypress(ev, gl, canvas, camera, scene); };
     window.onkeydown = function(ev){ keydown(ev, gl, canvas, camera, scene); };
 
+    var texbutton = document.getElementById("newTex");
+    texbutton.onclick = function(ev){ loadTextures(); };
+
      // Create a Sphere
     var sphere = new SphereGeometry(1, 32, 8);
     sphere.v_shader = v_shaders["sphere"];
@@ -193,7 +197,7 @@ function start(gl, canvas) {
     skyBox.setFragmentShader(f_shaders["skybox"]);
     scene.addGeometry(skyBox);
 
-   scene.draw();
+    scene.draw();
 
     var tex2 = new Texture2D(gl, 'img/beach/posz.jpg', function(tex) {
         console.log(tex);
@@ -211,12 +215,38 @@ function start(gl, canvas) {
         'img/beach/negz.jpg',
         'img/beach/posz.jpg'
     ], function(tex) {
+        skyBox.addUniform("u_skyBoxTex", "t3", tex);
         sphere.addUniform("u_sphereTex", "t3", tex);
         cube.addUniform("u_cubeTex", "t3", tex);
-        // cube2.addUniform("u_cubeTex", "t3", tex);
-        skyBox.addUniform("u_skyBoxTex", "t3", tex);
         scene.draw();
     });
+
+    function loadTextures(){
+        var tex = new Texture3D(gl, [
+            'img/beach/negx.jpg',
+            'img/beach/posx.jpg',
+            'img/beach/negy.jpg',
+            'img/beach/posy.jpg',
+            'img/beach/negz.jpg',
+            'img/beach/posz.jpg'
+        ], function(tex) {
+            sphere.addUniform("u_sphereTex", "t3", tex);
+            cube.addUniform("u_cubeTex", "t3", tex);
+            scene.draw();
+        });
+
+        var tex4 = new Texture3D(gl, [
+            'img/extra/blue.jpg',
+            'img/extra/blue.jpg',
+            'img/extra/blue.jpg',
+            'img/extra/blue.jpg',
+            'img/extra/blue.jpg',
+            'img/extra/blue.jpg'
+        ], function(tex) {
+            skyBox.addUniform("u_skyBoxTex", "t3", tex);
+            scene.draw();
+        });
+    }
 }
 
 function keypress(ev, gl, canvas, camera, scene){
