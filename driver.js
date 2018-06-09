@@ -241,30 +241,88 @@ function start(gl, canvas) {
             scene.draw();
         });
     }
+    
+    //front
+    var triang = new Geometry();
+    triang.vertices = [-1.0, 2.0, 1.0, 
+                        0.0, 4.0, 0.0, 
+                        1.0, 2.0, 1.0];
+    triang.indices = [0, 1, 2];
+    var uvs = [0.0, 0.0, 0.0, 
+               0.5, 1.0, 0.0, 
+               1.0, 0.0, 0.0];
+    triang.addAttribute("a_uv", uvs);
 
-    // var triang = new Geometry();
-    // triang.vertices = [-3.5, -1, 0.0, 
-    //                    -2.5, 1.0, 0.0, 
-    //                   -1.5, -1, 0.0];
-    // triang.indices = [0, 1, 2];
-    // var uvs = [0.0, 0.0, 0.0, 
-    //            0.5, 1.0, 0.0, 
-    //            1.0, 0.0, 0.0];
-    // triang.addAttribute("a_uv", uvs);
+    triang.setVertexShader(v_shaders["triang"]);
+    triang.setFragmentShader(f_shaders["triang"]);
+    scene.addGeometry(triang);
+    
+    //back
+    var triang2 = new Geometry();
+    triang2.vertices = [-1.0, 2.0, -1.0, 
+                        0.0, 4.0, 0.0, 
+                        1.0, 2.0, -1.0];
+    triang2.indices = [0, 1, 2];
+    var uvs2 = [0.0, 0.0, 0.0, 
+                0.5, 1.0, 0.0, 
+                1.0, 0.0, 0.0];
+    triang2.addAttribute("a_uv", uvs2);
+    
+    triang2.setVertexShader(v_shaders["triang"]);
+    triang2.setFragmentShader(f_shaders["triang"]);
+    scene.addGeometry(triang2);
 
-    // triang.setVertexShader(v_shaders["triang"]);
-    // triang.setFragmentShader(f_shaders["triang"]);
-    // scene.addGeometry(triang);
+    //left side
+    var triang3 = new Geometry();
+    triang3.vertices = [-1.0, 2.0, 1.0, 
+                        0.0, 4.0, 0.0, 
+                        -1.0, 2.0, -1.0];
+    triang3.indices = [0, 1, 2];
+    var uvs3 = [0.0, 0.0, 0.0, 
+               0.5, 1.0, 0.0, 
+               1.0, 0.0, 0.0];
+    triang3.addAttribute("a_uv", uvs3);
 
-    // var triang2 = new Geometry();
-    // triang2.vertices = [-3.5, -1, 0.0, -2.5, 1.0, 0.0, -1.5, -1, 0.0];
-    // triang2.indices = [0, 1, 2];
-    // var uvs2 = [0.0, 0.0, 0.0, 0.5, 1.0, 0.0, 1.0, 0.0, 0.0];
-    // triang2.addAttribute("a_uv", uvs2);
+    triang3.setVertexShader(v_shaders["triang"]);
+    triang3.setFragmentShader(f_shaders["triang"]);
+    scene.addGeometry(triang3);
 
-    // triang2.setVertexShader(v_shaders["triang"]);
-    // triang2.setFragmentShader(f_shaders["triang"]);
-    // scene.addGeometry(triang2);
+    //right side
+    var triang4 = new Geometry();
+    triang4.vertices = [1.0, 2.0, 1.0, 
+                        0.0, 4.0, 0.0, 
+                        1.0, 2.0, -1.0];
+    triang4.indices = [0, 1, 2];
+    var uvs4 = [0.0, 0.0, 0.0, 
+               0.5, 1.0, 0.0, 
+               1.0, 0.0, 0.0];
+    triang4.addAttribute("a_uv", uvs4);
+
+    triang4.setVertexShader(v_shaders["triang"]);
+    triang4.setFragmentShader(f_shaders["triang"]);
+    scene.addGeometry(triang4);
+
+    var bottom5 = new Geometry();
+    bottom5.vertices = [1.0, 2.0, -1.0, 
+                      1.0, 2.0, 1.0, 
+                      -1.0, 2.0, -1.0,
+                      -1.0,  2.0, 1.0
+                     ];
+    bottom5.indices = [0, 1, 2, 
+                     1, 2, 3, 
+                    ];
+
+    var uvs5 = [0.0, 0.0, 0.0, 
+               0.0, 1.0, 0.0,
+               1.0, 0.0, 0.0,
+               1.0, 1.0, 0.0
+               ];
+
+    bottom5.addAttribute("a_uv", uvs5);
+
+    bottom5.setVertexShader(v_shaders["triang"]);
+    bottom5.setFragmentShader(f_shaders["triang"]);
+    scene.addGeometry(bottom5);
 
     // Create a cube
     var skyBox = new CubeGeometry(10);
@@ -273,6 +331,16 @@ function start(gl, canvas) {
     scene.addGeometry(skyBox);
 
     scene.draw();
+
+    var tex2 = new Texture2D(gl, 'img/beach/posz.jpg', function(tex) {
+        console.log(tex);
+        triang.addUniform("u_tex", "t2", tex);
+        triang2.addUniform("u_tex", "t2", tex);
+        triang3.addUniform("u_tex", "t2", tex);
+        triang4.addUniform("u_tex", "t2", tex);
+        bottom5.addUniform("u_squareTex", "t2", tex);
+        scene.draw();
+    });
 
     var tex = new Texture3D(gl, [
         'img/beach/negx.jpg',
@@ -287,54 +355,6 @@ function start(gl, canvas) {
         cube.addUniform("u_cubeTex", "t3", tex);
         scene.draw();
     });
-
-    // function createPlane(size, rows, columns){
-    //     var plane = new Geometry();
-    //     var posEnd = size/2;
-    //     var neg = -1*(size/2);
-    //     for(int i = 0; i < columns; i++){
-    //         plane.vertices.push(
-    //             neg, neg, 0.0,
-    //             neg, pos, 0.0,
-                
-
-    //             )
-    //     }
-
-
-    //     plane.vertices = [0.0, size, 0.0, 
-    //                       0.0, -size, 0.0, 
-    //                       -size, size, 0.0,
-    //                       -size,  -size, 0.0,
-
-    //                       size, size, 0.0, 
-    //                       size, -size, 0.0, 
-    //                       0.0, size, 0.0,
-    //                       0.0,  -size, 0.0
-    //                      ];
-    //     plane.indices = [0, 1, 2, 
-    //                      1, 2, 3, 
-    //                      4, 5, 6,
-    //                      5, 6, 7
-    //                     ];
-
-    //     var uvs = [0.0, 0.0, 0.0, 
-    //                0.0, 1.0, 0.0,
-    //                1.0, 0.0, 0.0,
-    //                1.0, 1.0, 0.0,
-
-    //                0.0, 0.0, 0.0, 
-    //                0.0, 1.0, 0.0,
-    //                1.0, 0.0, 0.0,
-    //                1.0, 1.0, 0.0
-    //                ];
-
-    //     plane.addAttribute("a_uv", uvs);
-
-    //     plane.setVertexShader(v_shaders["triang"]);
-    //     plane.setFragmentShader(f_shaders["triang"]);
-    //     scene.addGeometry(plane);
-    // }
 
     function loadTextures(){
         var tex = new Texture3D(gl, [
