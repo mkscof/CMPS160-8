@@ -1,7 +1,8 @@
 
 v_shaders = {}
 f_shaders = {}
-var load = 0;
+var planeTextures = 1;
+var size = 1.0;
 
 // called when page is loaded
 function main() {
@@ -106,6 +107,12 @@ function start(gl, canvas) {
     var texbutton = document.getElementById("newTex");
     texbutton.onclick = function(ev){ loadTextures(); };
 
+    var incbutton = document.getElementById("incPlane");
+    incbutton.onclick = function(ev){ createPlane(++planeTextures); };
+
+    var decbutton = document.getElementById("decPlane");
+    decbutton.onclick = function(ev){ createPlane(--planeTextures); };
+
      // Create a Sphere
     var sphere = new SphereGeometry(1, 32, 8);
     sphere.v_shader = v_shaders["sphere"];
@@ -124,48 +131,116 @@ function start(gl, canvas) {
     cube.setScale(new Vector3([0.75,0.75,0.75]));
     scene.addGeometry(cube);
 
-    // var cube2 = new CubeGeometry(1);
-    // cube2.setVertexShader(v_shaders["cube"]);
-    // cube2.setFragmentShader(f_shaders["cube"]);
-    // cube2.setRotation(new Vector3([0,15,0]));
-    // cube2.setPosition(new Vector3([0.0,0.0,0.0]));
-    // cube2.setScale(new Vector3([0.75,0.75,0.75]));
-    // scene.addGeometry(cube2);
-
     var plane = new Geometry();
-    var size = 1.0
-    plane.vertices = [0.0, size, 0.0, 
-                      0.0, -size, 0.0, 
-                      -size, size, 0.0,
-                      -size,  -size, 0.0,
+    createPlane(planeTextures);
 
-                      size, size, 0.0, 
-                      size, -size, 0.0, 
-                      0.0, size, 0.0,
-                      0.0,  -size, 0.0
-                     ];
-    plane.indices = [0, 1, 2, 
-                     1, 2, 3, 
-                     4, 5, 6,
-                     5, 6, 7
-                    ];
+    function createPlane(toggle){
+        console.log(toggle);
+        if(toggle > 2){
+            toggle = 2;
+            planeTextures = 2;
+        }
+        if(toggle < 0){
+            toggle = 0;
+            planeTextures = 0;
+        }
+        if(toggle == 0){
+            plane.vertices = [size, size, 0.0, 
+                              size, -size, 0.0, 
+                              -size, size, 0.0,
+                              -size,  -size, 0.0,
+                             ];
+            plane.indices = [0, 1, 2, 
+                             1, 2, 3, 
+                            ];
 
-    var uvs = [0.0, 0.0, 0.0, 
-               0.0, 1.0, 0.0,
-               1.0, 0.0, 0.0,
-               1.0, 1.0, 0.0,
+            var uvs = [0.0, 0.0, 0.0, 
+                       0.0, 1.0, 0.0,
+                       1.0, 0.0, 0.0,
+                       1.0, 1.0, 0.0
+                       ];
+        }
+        else if(toggle == 1){
+            plane.vertices = [0.0, size, 0.0, 
+                              0.0, -size, 0.0, 
+                              -size, size, 0.0,
+                              -size,  -size, 0.0,
 
-               0.0, 0.0, 0.0, 
-               0.0, 1.0, 0.0,
-               1.0, 0.0, 0.0,
-               1.0, 1.0, 0.0
-               ];
+                              size, size, 0.0, 
+                              size, -size, 0.0, 
+                              0.0, size, 0.0,
+                              0.0,  -size, 0.0
+                             ];
+            plane.indices = [0, 1, 2, 
+                             1, 2, 3, 
+                             4, 5, 6,
+                             5, 6, 7
+                            ];
 
-    plane.addAttribute("a_uv", uvs);
+            var uvs = [0.0, 0.0, 0.0, 
+                       0.0, 1.0, 0.0,
+                       1.0, 0.0, 0.0,
+                       1.0, 1.0, 0.0,
 
-    plane.setVertexShader(v_shaders["triang"]);
-    plane.setFragmentShader(f_shaders["triang"]);
-    scene.addGeometry(plane);
+                       0.0, 0.0, 0.0, 
+                       0.0, 1.0, 0.0,
+                       1.0, 0.0, 0.0,
+                       1.0, 1.0, 0.0
+                       ];
+        }
+        else if(toggle == 2){
+            plane.vertices = [(-1*(size/3)), size, 0.0, 
+                              (-1*(size/3)), -size, 0.0, 
+                              -size, size, 0.0,
+                              -size,  -size, 0.0,
+
+                              size/3, size, 0.0, 
+                              size/3, -size, 0.0, 
+                              (-1*(size/3)), size, 0.0,
+                              (-1*(size/3)),  -size, 0.0,
+
+                              size, size, 0.0,
+                              size, -size, 0.0,
+                              size/3, size, 0.0,
+                              size/3, -size, 0.0
+                             ];
+            plane.indices = [0, 1, 2, 
+                             1, 2, 3, 
+                             4, 5, 6,
+                             5, 6, 7,
+                             8, 9, 10,
+                             9, 10, 11
+                            ];
+
+            var uvs = [0.0, 0.0, 0.0, 
+                       0.0, 1.0, 0.0,
+                       1.0, 0.0, 0.0,
+                       1.0, 1.0, 0.0,
+
+                       0.0, 0.0, 0.0, 
+                       0.0, 1.0, 0.0,
+                       1.0, 0.0, 0.0,
+                       1.0, 1.0, 0.0,
+
+                       0.0, 0.0, 0.0, 
+                       0.0, 1.0, 0.0,
+                       1.0, 0.0, 0.0,
+                       1.0, 1.0, 0.0
+                       ];
+        }
+
+        plane.addAttribute("a_uv", uvs);
+
+        plane.setVertexShader(v_shaders["triang"]);
+        plane.setFragmentShader(f_shaders["triang"]);
+        scene.addGeometry(plane);
+
+        var tex2 = new Texture2D(gl, 'img/beach/posz.jpg', function(tex) {
+            console.log(tex);
+            plane.addUniform("u_squareTex", "t2", tex);
+            scene.draw();
+        });
+    }
 
     // var triang = new Geometry();
     // triang.vertices = [-3.5, -1, 0.0, 
@@ -199,14 +274,6 @@ function start(gl, canvas) {
 
     scene.draw();
 
-    var tex2 = new Texture2D(gl, 'img/beach/posz.jpg', function(tex) {
-        console.log(tex);
-        plane.addUniform("u_squareTex", "t2", tex);
-        // triang.addUniform("u_tex", "t2", tex);
-        // triang2.addUniform("u_tex", "t2", tex);
-       scene.draw();
-    });
-
     var tex = new Texture3D(gl, [
         'img/beach/negx.jpg',
         'img/beach/posx.jpg',
@@ -220,6 +287,54 @@ function start(gl, canvas) {
         cube.addUniform("u_cubeTex", "t3", tex);
         scene.draw();
     });
+
+    // function createPlane(size, rows, columns){
+    //     var plane = new Geometry();
+    //     var posEnd = size/2;
+    //     var neg = -1*(size/2);
+    //     for(int i = 0; i < columns; i++){
+    //         plane.vertices.push(
+    //             neg, neg, 0.0,
+    //             neg, pos, 0.0,
+                
+
+    //             )
+    //     }
+
+
+    //     plane.vertices = [0.0, size, 0.0, 
+    //                       0.0, -size, 0.0, 
+    //                       -size, size, 0.0,
+    //                       -size,  -size, 0.0,
+
+    //                       size, size, 0.0, 
+    //                       size, -size, 0.0, 
+    //                       0.0, size, 0.0,
+    //                       0.0,  -size, 0.0
+    //                      ];
+    //     plane.indices = [0, 1, 2, 
+    //                      1, 2, 3, 
+    //                      4, 5, 6,
+    //                      5, 6, 7
+    //                     ];
+
+    //     var uvs = [0.0, 0.0, 0.0, 
+    //                0.0, 1.0, 0.0,
+    //                1.0, 0.0, 0.0,
+    //                1.0, 1.0, 0.0,
+
+    //                0.0, 0.0, 0.0, 
+    //                0.0, 1.0, 0.0,
+    //                1.0, 0.0, 0.0,
+    //                1.0, 1.0, 0.0
+    //                ];
+
+    //     plane.addAttribute("a_uv", uvs);
+
+    //     plane.setVertexShader(v_shaders["triang"]);
+    //     plane.setFragmentShader(f_shaders["triang"]);
+    //     scene.addGeometry(plane);
+    // }
 
     function loadTextures(){
         var tex = new Texture3D(gl, [
